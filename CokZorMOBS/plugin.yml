@@ -1,0 +1,7 @@
+name: CokZorMobs
+main: com.boybuscus.CokZorMOBS.CokZorMobsInfo
+version: 1.0
+api-version: 1.13
+description: >
+            Zorlayici Minecraft! Kolay gele Oktaycim!
+commands:
