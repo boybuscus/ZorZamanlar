@@ -32,6 +32,7 @@ public class MevsimTickChecker implements Runnable {
 	private int sekizbl;
 	@Override
 	public void run() {
+		
 		if (CokZorMobsListener.mevsimIsim.equalsIgnoreCase("kis")) {
 			
 			for (Player player : Bukkit.getOnlinePlayers()) {

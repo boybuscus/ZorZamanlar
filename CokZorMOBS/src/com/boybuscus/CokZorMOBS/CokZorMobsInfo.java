@@ -18,7 +18,7 @@ public class CokZorMobsInfo extends JavaPlugin {
 
 	   public static ItemStack konsantreElmas;
 	public CokZorMobsInfo plugin;
-	private int id;
+
 	@SuppressWarnings("deprecation")
 	public void onEnable() {
 		 //******************************************************SHAPEDRECIPEEEEEEEEEEEEEEEE

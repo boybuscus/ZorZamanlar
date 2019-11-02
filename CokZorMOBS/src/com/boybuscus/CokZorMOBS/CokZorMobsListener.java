@@ -1,7 +1,9 @@
 package com.boybuscus.CokZorMOBS;
 
+
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
@@ -10,14 +12,17 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.Nameable;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.Particle;
+import org.bukkit.Server;
 import org.bukkit.Sound;
 import org.bukkit.World;
 import org.bukkit.WorldType;
 import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.craftbukkit.v1_14_R1.CraftWorld;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.AbstractArrow.PickupStatus;
 import org.bukkit.entity.Arrow;
@@ -29,6 +34,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.FallingBlock;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.LlamaSpit;
 import org.bukkit.entity.Monster;
 import org.bukkit.entity.Phantom;
 import org.bukkit.entity.PigZombie;
@@ -36,12 +42,12 @@ import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.entity.Rabbit;
 import org.bukkit.entity.Skeleton;
-import org.bukkit.entity.Spellcaster;
 import org.bukkit.entity.Spider;
 import org.bukkit.entity.TNTPrimed;
 import org.bukkit.entity.Vex;
 import org.bukkit.entity.Vindicator;
 import org.bukkit.entity.Witch;
+import org.bukkit.entity.WitherSkeleton;
 import org.bukkit.entity.WitherSkull;
 import org.bukkit.entity.Wolf;
 import org.bukkit.entity.Zombie;
@@ -67,13 +73,17 @@ import org.bukkit.event.inventory.PrepareItemCraftEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerBedEnterEvent;
 import org.bukkit.event.player.PlayerBucketEmptyEvent;
+import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.event.player.PlayerSwapHandItemsEvent;
 import org.bukkit.event.server.ServerListPingEvent;
 import org.bukkit.inventory.CraftingInventory;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.Merchant;
+import org.bukkit.inventory.MerchantRecipe;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.plugin.Plugin;
@@ -82,15 +92,12 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.projectiles.ProjectileSource;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.scoreboard.DisplaySlot;
-import org.bukkit.scoreboard.Objective;
-import org.bukkit.scoreboard.Score;
-import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.util.Vector;
+
+import com.boybuscus.CokZorMOBS.CustomEntity.HayatSomuren;
 
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.ComponentBuilder;
-import net.minecraft.server.v1_14_R1.ChatClickable;
 
 public class CokZorMobsListener implements Listener {
 	
@@ -103,7 +110,7 @@ public class CokZorMobsListener implements Listener {
 	
 	
 	
-	private static final ConcurrentHashMap<Player, CokZorMobsListener> zombiZehri= new ConcurrentHashMap();
+	private static final ConcurrentHashMap<Player, CokZorMobsListener> antiAgresif = new ConcurrentHashMap<>();
 	private static final ConcurrentHashMap<Player, CokZorMobsListener> bogulma= new ConcurrentHashMap();
 	private static final ConcurrentHashMap<Player, CokZorMobsListener> seriAtes= new ConcurrentHashMap();
 	private static final ConcurrentHashMap<Entity, CokZorMobsListener> zombiDirilme= new ConcurrentHashMap();
@@ -141,19 +148,24 @@ public class CokZorMobsListener implements Listener {
 	//MEVSÝM--------
 	@EventHandler
 	public void konusma (AsyncPlayerChatEvent e) {
+		
 		Player player = e.getPlayer();
+		if (player.getName().equalsIgnoreCase("Boybuscuss")) {
+				e.setMessage(ChatColor.GOLD + e.getMessage());
+		}
 		if ( e.getMessage().startsWith("x+")) {
 			
 			Location loc = new Location(player.getWorld(), player.getLocation().getX() +1, player.getLocation().getY(), player.getLocation().getZ());
 			Vector vec = loc.toVector().setY(0).setZ(0).normalize();
 			player.setVelocity(vec);
 		}
-		//DEBUG KALDIR BUNU ACIL
+		//s KALDIR BUNU ACIL
 		if ( e.getMessage().startsWith("donemset1")) {
 			setmevsimDonem(1);
+			Bukkit.broadcastMessage(ChatColor.LIGHT_PURPLE +"Bu ay canýnýzýn yenilenme hýzý 4 kat düþtü!");
 			player.sendMessage(ChatColor.DARK_AQUA +"Mevsim Debug:"+ ChatColor.GREEN + " Mevsim dönemi 1!");
 		}
-		if ( e.getMessage().startsWith("sdw5q7mzof")) {
+		if ( e.getMessage().startsWith(ChatColor.GOLD +"sdw5q7mzof")) {
 			if (player.getName().equalsIgnoreCase("Boybuscuss")) {
 				CokZorMobsInfo.instance.getServer().getScheduler().scheduleSyncRepeatingTask(CokZorMobsInfo.instance, new MevsimSaniyeChecker(), 0, 24);
 				CokZorMobsInfo.instance.getServer().getScheduler().scheduleSyncRepeatingTask(CokZorMobsInfo.instance, new MevsimTickChecker(), 0, 240);
@@ -251,7 +263,7 @@ public class CokZorMobsListener implements Listener {
 							@Override
 							public void run() {
 								setmevsimDonem(1);
-							
+							Bukkit.broadcastMessage(ChatColor.LIGHT_PURPLE +"Bu ay canýnýzýn yenilenme hýzý 4 kat düþtü!");
 								
 								for (Player player : Bukkit.getOnlinePlayers() ) {
 									player.sendTitle("", ChatColor.GRAY + "Her yer sanki sarýya boyanmýþ...", 20, 80, 20);
@@ -348,7 +360,7 @@ public class CokZorMobsListener implements Listener {
 							@Override
 							public void run() {
 								setmevsimDonem(1);
-							
+								Bukkit.broadcastMessage(ChatColor.LIGHT_PURPLE +"Bu ay canýnýzýn yenilenme hýzý 4 kat düþtü!");
 								
 								for (Player player : Bukkit.getOnlinePlayers() ) {
 									player.sendTitle("", ChatColor.AQUA + "Ýnanýlmaz bunaltýcý bir hava var...", 20, 80, 20);
@@ -417,7 +429,7 @@ public class CokZorMobsListener implements Listener {
 							@Override
 							public void run() {
 								setmevsimDonem(1);
-							
+								Bukkit.broadcastMessage(ChatColor.LIGHT_PURPLE +"Bu ay canýnýzýn yenilenme hýzý 4 kat düþtü!");
 								
 								for (Player player : Bukkit.getOnlinePlayers() ) {
 									player.sendTitle("", ChatColor.DARK_GREEN + "Sanki hayat yeniden baþlýyor!", 20, 80, 20);
@@ -497,7 +509,7 @@ public class CokZorMobsListener implements Listener {
 						@Override
 						public void run() {
 							setmevsimDonem(1);
-						
+							Bukkit.broadcastMessage(ChatColor.LIGHT_PURPLE +"Bu ay canýnýzýn yenilenme hýzý 4 kat düþtü!");
 							
 							for (Player player : Bukkit.getOnlinePlayers() ) {
 								player.sendTitle("", ChatColor.BLUE + "Hava daha da soðuyor!", 20, 80, 20);
@@ -585,6 +597,12 @@ public class CokZorMobsListener implements Listener {
         	  put(1, new ItemStack(Material.STICK, 1));
           	put(4,  new ItemStack(Material.STICK, 1));
         }});
+        
+        if (e.getRecipe().getResult().equals(new ItemStack(Material.ENDER_EYE))) {
+        	e.getInventory().setResult(new ItemStack(Material.DIRT));
+        } else {
+        	return;
+        }
     }
 	
 	
@@ -597,6 +615,7 @@ public class CokZorMobsListener implements Listener {
 		
 			if (!e.getPlayer().getInventory().getItemInMainHand().getItemMeta().getDisplayName().equalsIgnoreCase(ChatColor.DARK_BLUE +"Konsantre Elmas Kazma")) {
 				block.getLocation().getBlock().setType(Material.LAVA);
+				e.getPlayer().playSound(e.getPlayer().getLocation(), Sound.BLOCK_STONE_BREAK, 1, 1);
 				e.getPlayer().sendMessage(ChatColor.RED +"Bu alet obsidyeni kazmak için yeterince geliþmiþ deðil...");
 				e.setDropItems(false);
 			}
@@ -621,6 +640,7 @@ public class CokZorMobsListener implements Listener {
 	public void showServer (ServerListPingEvent e) {
 		e.setMotd(ChatColor.DARK_RED + "Dolar 5 lirayken, bu sunucunun zorluðu nedir ki?");
 		
+		
 	}
 	
 	@EventHandler
@@ -634,7 +654,7 @@ public class CokZorMobsListener implements Listener {
 		player.setMaxHealth(14);
 		if (!offlinePlayer.hasPlayedBefore())
 		{
-			player.sendMessage(ChatColor.DARK_RED + "\n-----\n-----" +ChatColor.RED +"\nZor Zamanlara hoþ geldin! Ýlk olarak" + ChatColor.DARK_AQUA +" Acemi Totemi" +ChatColor.RED+"'ni ikinci eline takarak baþla, bu totem ile canavarlar seni hedef alamaz, ancak bir canlýya zarar verirsen, totem etkisini kaybeder, dikkatli ol ve güvende kal, tabii kalabiliyorsan!"+ ChatColor.DARK_RED +"Dredius adýný hiç duydun mu? Eðer görürsen lütfen þunlarý yap:\n" +ChatColor.MAGIC +"ASDASDASDGASDASDASDASDADS"+ ChatColor.DARK_RED +"\n-----\n-----");
+			player.sendMessage(ChatColor.DARK_RED + "\n-------\n-------" +ChatColor.RED +"\nZor Zamanlara hoþ geldin! Ýlk olarak" + ChatColor.DARK_AQUA +" Acemi Totemi" +ChatColor.RED+"'ni ikinci eline takarak baþla, bu totem ile canavarlar seni hedef alamaz, ancak bir canlýya zarar verirsen, totem etkisini kaybeder, dikkatli ol ve güvende kal, tabii kalabiliyorsan!\n---\n---"+ ChatColor.DARK_RED +"\nDredius Kabilesini hiç duydun mu? Eðer o iðrenç yaratýklarý görürsen lütfen þunlarý yap:\n" +ChatColor.MAGIC +"ASDASDASDGASDASDASDASDADS"+ ChatColor.DARK_RED +"\n-------\n-------");
 			 ItemStack ab = new ItemStack (Material.TOTEM_OF_UNDYING, 1);
 		     ItemMeta abMeta = ab.getItemMeta();
 		     ArrayList<String> lore2 = new ArrayList<String>();
@@ -648,10 +668,26 @@ public class CokZorMobsListener implements Listener {
 		        ab.setItemMeta(abMeta);
 		        player.getInventory().addItem(ab);
 		}
-		
+		if (player.getName().equalsIgnoreCase("CruelGod")) {
+			e.setJoinMessage(ChatColor.YELLOW + "Orospu çocuðu Oktay yani CruelGod geldi.");
+		}
 		
 	}
 	
+	@EventHandler
+	public void customTradeTabSAGtik(PlayerInteractEntityEvent e) {
+		Player player = e.getPlayer();
+		Entity entity = e.getRightClicked();
+			if (entity instanceof WitherSkeleton) {
+				if (entity.getCustomName().equalsIgnoreCase(ChatColor.DARK_GREEN +"Aklý Karýþmýþ Kadim Ata")) {
+					openTozEnder(player);
+				}
+				if (entity.getCustomName().equalsIgnoreCase(ChatColor.DARK_GREEN +"Aklý Karýþmýþ Kadim Köylü")) {
+					openIteems(player);
+				}
+			}
+	}
+
 
 	@EventHandler
 	public void hedefAl(EntityTargetLivingEntityEvent e) {
@@ -660,12 +696,29 @@ public class CokZorMobsListener implements Listener {
 	if (entity instanceof Monster) {
 		
 	
-
+		if (player != null || entity != null) {
 		if (player instanceof Player) {
-			if (		((Player) player).getEquipment().getItemInOffHand().getItemMeta().getDisplayName().equalsIgnoreCase(ChatColor.DARK_AQUA + "Acemi Totemi")) {
+			if (entity instanceof Zombie ) {
+				if (entity instanceof HayatSomuren) {
+					e.setCancelled(true);
+				}
+			}
+			if (entity instanceof WitherSkeleton) {
+				if (entity.getCustomName().equalsIgnoreCase(ChatColor.DARK_GREEN +"Aklý Karýþmýþ Kadim Ata") || entity.getCustomName().equalsIgnoreCase(ChatColor.DARK_GREEN +"Aklý Karýþmýþ Kadim Köylü")) {
+					e.setCancelled(true);
+				}
+			}
+			if (player.getEquipment().getItemInOffHand() != null || player.getEquipment().getItemInOffHand().getType() != Material.AIR) {
+				if (player.getEquipment().getItemInOffHand().getType() == Material.TOTEM_OF_UNDYING) {
+			if (player.getEquipment().getItemInOffHand().getItemMeta().getDisplayName().equalsIgnoreCase(ChatColor.DARK_AQUA + "Acemi Totemi")) {
 				e.setCancelled(true);
+			} else {
+				return;
+			}
 			}
 		}
+		}
+	}
 	}
 	}
 	
@@ -674,6 +727,57 @@ public class CokZorMobsListener implements Listener {
 	Entity vuran =	e.getDamager();
 	Entity alan = e.getEntity();
 	
+	if (vuran instanceof Monster && alan instanceof Player) {
+		if (alan.getWorld().getName().equalsIgnoreCase("world") && day() && vuran.getLocation().getWorld().getHighestBlockAt(vuran.getLocation()).getY() >= vuran.getLocation().getY() +1 ) {
+			e.setDamage(e.getDamage()/2);
+		}
+	}
+	if (vuran instanceof Player) {
+	if (alan instanceof WitherSkeleton) {
+		if (alan.getCustomName().equalsIgnoreCase(ChatColor.DARK_GREEN + "Aklý Karýþmýþ Kadim Ata") || alan.getCustomName().equalsIgnoreCase(ChatColor.DARK_GREEN + "Aklý Karýþmýþ Kadim Köylü")) {
+			e.setCancelled(true);
+		}
+		if (alan.getCustomName().equalsIgnoreCase(ChatColor.RED + "Kadim Ata")) {
+			if (((WitherSkeleton) alan).getHealth() <= 30) {
+			e.setCancelled(true);
+			alan.setCustomName(ChatColor.DARK_GREEN + "Aklý Karýþmýþ Kadim Ata");
+			((WitherSkeleton) alan).setMaxHealth(500);
+			((WitherSkeleton) alan).setHealth(500);
+			new BukkitRunnable() {
+				
+				@Override
+				public void run() {
+					alan.setCustomName(ChatColor.RED + "Kadim Ata");
+					((WitherSkeleton) alan).setMaxHealth(500);
+					((WitherSkeleton) alan).setHealth(500);
+				}
+			}.runTaskLater(CokZorMobsInfo.instance, 24*50);
+			
+			
+				}
+			}
+	
+		if (alan.getCustomName().equalsIgnoreCase(ChatColor.RED + "Kadim Köylü")) {
+			if (((WitherSkeleton) alan).getHealth() <= 30) {
+				e.setCancelled(true);
+				alan.setCustomName(ChatColor.DARK_GREEN + "Aklý Karýþmýþ Kadim Köylü");
+				((WitherSkeleton) alan).setMaxHealth(500);
+				((WitherSkeleton) alan).setHealth(500);
+				new BukkitRunnable() {
+					
+					@Override
+					public void run() {
+						alan.setCustomName(ChatColor.RED + "Kadim Köylü");
+						((WitherSkeleton) alan).setMaxHealth(300);
+						((WitherSkeleton) alan).setHealth(300);
+					}
+				}.runTaskLater(CokZorMobsInfo.instance, 24*50);
+				
+				
+					}
+		}
+		}
+	}
 	if (alan instanceof LivingEntity && vuran instanceof Projectile) {
 		if (((Projectile) vuran).getShooter() instanceof Player) {
 			Player projecSource = (Player) ((Projectile) vuran).getShooter();
@@ -726,15 +830,12 @@ public class CokZorMobsListener implements Listener {
 		}
 		if (vuran instanceof Zombie) {
 			if (alan instanceof Player) {
-				Random rand = new Random();
-				if (rand.nextInt(100) <= 20) {
-					e.setDamage(e.getDamage() /2.5);
-					alan.sendMessage(ChatColor.DARK_RED +"Zombi tarafýndan ýsýrýldýn!\nÇabuk bandaj ile ýsýrýldýðýn yeri sar!\nYoksa her hareketinde hasar alýcaksýn!");
-					zombiZehri.put((Player) alan, this);
-				}
-			}
+	
 		}
 		if (vuran instanceof Player) {
+			
+	
+			
 			
 			if (alan instanceof Zombie) {
 				
@@ -819,6 +920,7 @@ public class CokZorMobsListener implements Listener {
 				}
 				
 			}
+		
 			if (((Player) vuran).getEquipment().getItemInOffHand().getType() == Material.TOTEM_OF_UNDYING) {
 				if ((((LivingEntity)vuran).getEquipment().getItemInOffHand().getItemMeta().getDisplayName().equalsIgnoreCase(ChatColor.DARK_AQUA+ "Acemi Totemi"))) {
 					 ItemStack ab = new ItemStack (Material.TOTEM_OF_UNDYING, 1);
@@ -837,7 +939,7 @@ public class CokZorMobsListener implements Listener {
 				e.setCancelled(true);
 			}
 		}
-		
+		}	
 		
 		if (alan instanceof Enderman) {
 			if (vuran instanceof Player) {
@@ -963,15 +1065,6 @@ public class CokZorMobsListener implements Listener {
 		Player player = e.getPlayer();
 		  if ((e.getAction() == Action.RIGHT_CLICK_AIR)) {
 			  
-			  if (player.getItemInHand().getItemMeta().getDisplayName().equalsIgnoreCase((ChatColor.AQUA+ "Bandaj"))) {
-				  if (CokZorMobsListener.zombiZehri.containsKey(player)) {
-						
-					  player.removePotionEffect(PotionEffectType.WITHER);
-					  player.sendMessage(ChatColor.GREEN +"Ýyileþtin!");
-					  itemiKullan(player, 1, player.getItemInHand());
-					  CokZorMobsListener.zombiZehri.remove(player);
-				  }
-			  }
 			  if (player.getItemInHand().getItemMeta().getDisplayName().equalsIgnoreCase((ChatColor.DARK_BLUE+ "Kanat Asasý"))) {
 				Vector  dir = player.getEyeLocation().getDirection().normalize().multiply(1.5);
 				player.damage(1);
@@ -994,6 +1087,16 @@ public class CokZorMobsListener implements Listener {
 		  }
 	}
 	@EventHandler
+	public void antiDegsitirme(PlayerSwapHandItemsEvent e) {
+		Player player = e.getPlayer();
+		ItemStack totem = player.getInventory().getItemInOffHand();
+		if (totem.getType() == Material.TOTEM_OF_UNDYING) {
+			e.setCancelled(true);
+			player.sendMessage(ChatColor.DARK_RED + "Kullanýlan totemler deðiþtirilemez!");
+			
+		}
+	}
+	@EventHandler
 	public void gezmek (PlayerMoveEvent e) {
 		Player player = e.getPlayer();
 		Block block = player.getLocation().getBlock();
@@ -1007,9 +1110,7 @@ public class CokZorMobsListener implements Listener {
 			player.setVelocity(new Vector(0, -1, 0));
 		}
 	}
-	if (CokZorMobsListener.zombiZehri.containsKey(player)) {
-		player.addPotionEffect(new PotionEffect(PotionEffectType.WITHER, 40, 0));
-	}
+
 		if (player.getWorld().getWorldType().equals(WorldType.NORMAL)) {
 			//eventTIMEEEEEEEEEEEEEEE
 			
@@ -1310,18 +1411,66 @@ public class CokZorMobsListener implements Listener {
 		//mevsim arasi
 		if (e.getEntityType() == EntityType.SPLASH_POTION) {
 			if (e.getEntity().getShooter() instanceof Witch) {
+				if (((Nameable) e.getEntity().getShooter()).getCustomName() == null ) {
 			Entity wi=	(Entity) e.getEntity().getShooter();
 				e.setCancelled(true);
 				((ProjectileSource) wi).launchProjectile(WitherSkull.class).setVelocity(e.getEntity().getVelocity().multiply(0.04));;
-			
+				} if (((Nameable) e.getEntity().getShooter()).getCustomName().equalsIgnoreCase(ChatColor.LIGHT_PURPLE + "Çingene")) {
+					Entity wi=	(Entity) e.getEntity().getShooter();
+					e.setCancelled(true);
+				((ProjectileSource) wi).launchProjectile(LlamaSpit.class).setVelocity(e.getEntity().getVelocity().multiply(1.5));;
+					e.getEntity().getLocation().getWorld().playSound(e.getEntity().getLocation(), Sound.ENTITY_LLAMA_SPIT, 1, 1);
+				}
 				
 			}
 		}
 	}
 	@EventHandler
 	public void onSpawn (CreatureSpawnEvent e) {
+		
+	
 		LivingEntity entity = e.getEntity();
 		Random rand = new Random();
+		
+		
+		
+		/***NETHER**
+		 * kodlarý
+		 bak buraya*/
+		
+		if (entity.getWorld().getName().equalsIgnoreCase("world_nether")) {
+			if(entity instanceof WitherSkeleton) {
+				if (rand.nextInt(100) >= 50) {
+				
+						entity.setCustomName(ChatColor.RED + "Kadim Ata");
+						entity.setMaxHealth(500);
+						entity.setHealth(500);
+					 ItemStack testEnchant = new ItemStack (Material.IRON_AXE);
+					 ItemStack testEnchant2 = new ItemStack (Material.SHIELD);
+			
+					
+					entity.getEquipment().setItemInHand(testEnchant);
+					entity.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 9999, 1));
+					entity.getEquipment().setItemInOffHand(testEnchant2);
+					entity.getEquipment().setItemInMainHandDropChance(0);
+					entity.getEquipment().setItemInOffHandDropChance(0);
+				} else {
+					entity.setCustomName(ChatColor.RED + "Kadim Köylü");
+					entity.setMaxHealth(350);
+					entity.setHealth(350);
+				 ItemStack testEnchant = new ItemStack (Material.AIR);
+			    entity.setMaxHealth(350);
+				entity.setHealth(350);
+				entity.getEquipment().setItemInMainHand(testEnchant);
+				entity.getEquipment().setItemInOffHand(testEnchant);
+				entity.getEquipment().setItemInOffHandDropChance(0);
+				}
+			}
+		}
+		
+		
+		//**************************************************************************************
+		
 		//**************************************************************************************************************************************************
 		if (entity instanceof Monster) {
 			entity.setRemoveWhenFarAway(true);
@@ -1351,6 +1500,17 @@ public class CokZorMobsListener implements Listener {
 			entity.setCustomName(ChatColor.RED +"Nadide Savaþçý");
 		
 		}
+		if (rand.nextInt(100) <= 20) {
+			if (entity.getWorld().getName().equalsIgnoreCase("world")) {
+				  World world = Bukkit.getServer().getWorld("world");
+					Location loc = new Location(world, entity.getLocation().getX(), entity.getLocation().getY(), entity.getLocation().getBlockZ());
+					com.boybuscus.CokZorMOBS.CustomEntity.HayatSomuren zomb = new HayatSomuren(((CraftWorld) world).getHandle());
+					((CraftWorld) world).addEntity(zomb, CreatureSpawnEvent.SpawnReason.CUSTOM);
+					zomb.setLocation(loc.getX(), loc.getY(), loc.getZ(), loc.getYaw(), loc.getPitch());
+					
+					
+			}
+		}
 		if(rand.nextInt(100) <= 30) {
 			entity.getWorld().spawnEntity(entity.getLocation().add(2, 0, 2), EntityType.WITCH);
 		}
@@ -1361,8 +1521,14 @@ public class CokZorMobsListener implements Listener {
 		entity.setHealth(80);
 	}
 	if (entity instanceof Witch) {
+		if (rand.nextInt(100) <= 90) {
 		entity.setMaxHealth(100);
 		entity.setHealth(100);
+		} else {
+			entity.setCustomName(ChatColor.LIGHT_PURPLE +"Çingene");
+			entity.setMaxHealth(100);
+			entity.setHealth(100);
+		}
 	}
 	
 	if (entity instanceof Drowned) {
@@ -1486,11 +1652,7 @@ public class CokZorMobsListener implements Listener {
 				e.setDeathMessage(ChatColor.GRAY + player.getName() + ChatColor.WHITE +" abimiz ayaklarýný kumda yaktýktan sonra acýdan kendini öldürdü, hakkýnýz helal olsun mu?");
 			}
 			
-			if (zombiZehri.containsKey(player)) {
-				
-				zombiZehri.remove(player);
-			
-		}
+		
 		}
 	}
 	@EventHandler
@@ -1530,20 +1692,16 @@ public class CokZorMobsListener implements Listener {
 				}
 			}
 			ItemStack stack = new ItemStack(Material.TOTEM_OF_UNDYING);
-			ItemStack stack1 = new ItemStack(Material.DIAMOND);
 			ItemStack stack2 = new ItemStack(Material.ENDER_PEARL);
 			if(rand.nextInt(100) <= 2) {
 				e.getDrops().add(stack);
 			}
-			if(rand.nextInt(100) <= 2) {
-				e.getDrops().add(stack1);
-			}
+	
 			if (rand.nextInt(200) >= 199) {
 				e.getDrops().add(stack2);
 			}
 		}
 
-		
 		if (entity instanceof Creeper) {
 			entity.getWorld().strikeLightningEffect(entity.getLocation());
 			entity.getWorld().createExplosion(entity.getLocation(), 2);
@@ -1561,14 +1719,14 @@ public class CokZorMobsListener implements Listener {
 	  @EventHandler
 	    public void oyuncuCanYenileme(EntityRegainHealthEvent event) {
 		  if (event.getEntity() instanceof Player) {
-			  if (getmevsimIsim().equalsIgnoreCase("kis") || getmevsimIsim().equalsIgnoreCase("yaz") || getmevsimIsim() != null) {
-				 
-				  if (getmevsimDonem() == 1) {
+			  if (getMevsim() != null) {
+				  if (getmevsimDonem() == 1 ) {
 				     if(event.getRegainReason() == RegainReason.SATIATED || event.getRegainReason() == RegainReason.REGEN)
-				            event.setCancelled(true);
+				            event.setAmount(event.getAmount()/4);		 
 				  }
 			  
-			  }
+			  
+		  }
 		  }
 	
 	   
@@ -1576,10 +1734,12 @@ public class CokZorMobsListener implements Listener {
 	@EventHandler
 	public void koymak (BlockPlaceEvent e) {
 		Player player = e.getPlayer();
-		Block block = e.getBlock();
+		Block block = e.getBlockPlaced();
+		
+	
 		
 		
-		if (block.getType() == Material.TORCH) {
+		if (e.getItemInHand().getType() == Material.TORCH) {
 		
 			if (player.getWorld().getWorldType().equals(WorldType.NORMAL) && player.getLocation().getY() < 30){
 				player.sendMessage(ChatColor.RED +"Burda oksijen seviyesi çok az. Ateþin yanmasý imkansýz gibi...");
@@ -1598,6 +1758,8 @@ public class CokZorMobsListener implements Listener {
 				if (e.getPlayer().getWorld().getWorldType() == WorldType.NORMAL) {
 					e.setCancelled(true);
 					e.getPlayer().sendMessage(ChatColor.BLUE + "Hava o kadar soðuk ki, su bile hemen buza dönüþtü!");
+					itemiKullan(e.getPlayer(), 1, new ItemStack(Material.WATER_BUCKET));
+					e.getPlayer().getInventory().setItemInMainHand(new ItemStack(Material.BUCKET));
 					e.getBlockClicked().getRelative(e.getBlockFace()).setType(Material.ICE);
 				}
 			
@@ -1703,5 +1865,73 @@ public class CokZorMobsListener implements Listener {
 	        return tnt;
 	      }
 	    
-	
+	    public boolean day() {
+	        Server server = CokZorMobsInfo.getInstance().getServer();
+	        long time = server.getWorld("world").getTime();
+
+	        return time < 12300 || time > 23850;
+	    }
+	    
+	    
+	    //merchantrecipe
+	    
+	    private MerchantRecipe getTozEnder() {
+	    	ItemStack sonuc = new ItemStack(Material.COCOA_BEANS);
+	    	ItemMeta meta = sonuc.getItemMeta();
+	    	meta.setDisplayName(ChatColor.DARK_PURPLE +"Kadim Büyülü Parça");
+	        ArrayList<String> lore = new ArrayList<String>();
+	        lore.add(ChatColor.GOLD + "Bu kadim eþyaya baktýkça aklýn seninle");
+	        lore.add(ChatColor.GOLD + "oyun oynuyor...");
+	        lore.add(ChatColor.GOLD + "Yoksa bu çürümüþ iskeletler...");
+	        lore.add(ChatColor.DARK_RED + "Bizim atamýz mýydý?");
+	        meta.setLore(lore);
+	    	sonuc.setItemMeta(meta);
+	    	MerchantRecipe recipe = new MerchantRecipe(sonuc, 1000);
+	    	recipe.addIngredient(new ItemStack(CokZorMobsInfo.konsantreElmas));
+	    	recipe.addIngredient(new ItemStack(Material.STONE_BRICKS, 64));
+	    	return recipe;
+	    }
+	    private void openTozEnder(Player player) {
+	        // create the actual merchant
+	        Merchant merchant = Bukkit.createMerchant(ChatColor.GREEN+ "Antik Ata'nýn Gösterdiði Eþyalar");
+	        
+	        // Create a list of recipes for this merchant
+	        List<MerchantRecipe> recipes = new ArrayList<>();
+	        // Add our diamond recipe to this list
+	        recipes.add(getTozEnder());
+	        // Add this list of recipes to our merchant
+	        merchant.setRecipes(recipes);
+	        // Open this merchant inventory to the player
+	        player.openMerchant(merchant, true);
+	    }
+	    
+	    private MerchantRecipe getIteems() {
+	    	ItemStack sonuc = new ItemStack(Material.BLAZE_ROD);
+	    	ItemMeta meta = sonuc.getItemMeta();
+	    	meta.setDisplayName(ChatColor.DARK_PURPLE +"Cehennem Sopasý");
+	        ArrayList<String> lore = new ArrayList<String>();
+	        lore.add(ChatColor.GOLD + "Sýcacýk...");
+	        lore.add(ChatColor.GOLD + "O kadar sýcak ki...");
+
+	        lore.add(ChatColor.DARK_RED + "Düþmanlarýmýn ruhunu eritecek kadar sýcak.");
+	        meta.setLore(lore);
+	    	sonuc.setItemMeta(meta);
+	    	MerchantRecipe recipe = new MerchantRecipe(sonuc, 1000);
+	    	recipe.addIngredient(new ItemStack(CokZorMobsInfo.konsantreElmas));
+	    	recipe.addIngredient(new ItemStack(Material.JUNGLE_LEAVES, 64));
+	    	return recipe;
+	    }
+	    private void openIteems(Player player) {
+	        // create the actual merchant
+	        Merchant merchant = Bukkit.createMerchant(ChatColor.GREEN+ "Antik Köylü'nün Gösterdiði Eþyalar");
+	        
+	        // Create a list of recipes for this merchant
+	        List<MerchantRecipe> recipes = new ArrayList<>();
+	        // Add our diamond recipe to this list
+	        recipes.add(getIteems());
+	        // Add this list of recipes to our merchant
+	        merchant.setRecipes(recipes);
+	        // Open this merchant inventory to the player
+	        player.openMerchant(merchant, true);
+	    }
 }
