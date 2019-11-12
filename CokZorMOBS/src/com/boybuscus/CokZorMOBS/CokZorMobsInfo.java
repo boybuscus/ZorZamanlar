@@ -12,6 +12,9 @@ import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.inventory.ShapelessRecipe;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import com.boybuscus.CokZorMOBS.irklar.IrkListener;
+import com.boybuscus.CokZorMOBS.irklar.IrkSeciciListener;
 	
 public class CokZorMobsInfo extends JavaPlugin {
 	   static CokZorMobsInfo instance;
@@ -53,8 +56,8 @@ public class CokZorMobsInfo extends JavaPlugin {
 	    konsantreElmas.setItemMeta(konsantreMeta);
 		ShapedRecipe FocusedDY = new ShapedRecipe(konsantreDiamond, konsantreElmas);
 		
-		
-		FocusedDY.shape("*%*");
+		FocusedDY.shape("%%%","%*%","%%%");
+	
 		
 
 		FocusedDY.setIngredient('*', Material.DIAMOND_BLOCK);
@@ -236,10 +239,10 @@ public class CokZorMobsInfo extends JavaPlugin {
 		     shieldObsidian.setDurability((short)1);
 		     shieldObsidianMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_UNBREAKABLE);
 		     ArrayList<String> shieldObsidianlore4 = new ArrayList<String>();
-		     shieldObsidianMeta.setDisplayName(ChatColor.BLACK+ "Obsidyen Kalkan");
+		     shieldObsidianMeta.setDisplayName(ChatColor.LIGHT_PURPLE+ "Obsidyen Kalkan");
 		     shieldObsidianMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
 		     shieldObsidianMeta.addEnchant(Enchantment.ARROW_KNOCKBACK, 1, true);
-		        shieldObsidianlore4.add(ChatColor.RED + "Hala sýcak hissettiriyor.");
+		        shieldObsidianlore4.add(ChatColor.YELLOW + "Hala sýcak hissettiriyor.");
 		 
 		        shieldObsidianMeta.setLore(shieldObsidianlore4);
 		        shieldObsidian.setItemMeta(shieldObsidianMeta);
@@ -256,36 +259,19 @@ public class CokZorMobsInfo extends JavaPlugin {
 		  
 		  ///**********************************************************************************
 		  
-		  ItemStack Excalibursword = new ItemStack (Material.SHIELD, 1);
-		     ItemMeta ExcaliburswordMeta = Excalibursword.getItemMeta();
-		     ExcaliburswordMeta.setUnbreakable(true); // On versions 1.11 and above
-		     ExcaliburswordMeta.spigot().setUnbreakable(true); 
-		     Excalibursword.setDurability((short)1);
-		     ExcaliburswordMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_UNBREAKABLE);
-		     ArrayList<String> Excaliburswordlore4 = new ArrayList<String>();
-		     ExcaliburswordMeta.setDisplayName(ChatColor.BLACK+ "Obsidyen Kalkan");
-		     ExcaliburswordMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-		     ExcaliburswordMeta.addEnchant(Enchantment.ARROW_KNOCKBACK, 1, true);
-		        Excaliburswordlore4.add(ChatColor.RED + "Hala sýcak bir hisi var...");
-		 
-		        ExcaliburswordMeta.setLore(Excaliburswordlore4);
-		        Excalibursword.setItemMeta(ExcaliburswordMeta);
-		        ShapelessRecipe ExcaliburswordY	= new ShapelessRecipe(Excalibursword);
-		        ExcaliburswordY.addIngredient(Material.OBSIDIAN);
-		        ExcaliburswordY.addIngredient(Material.DIAMOND);
-		        ExcaliburswordY.addIngredient(Material.SHIELD);
-		        
-		        
-		  getServer().addRecipe(ExcaliburswordY);
+	
 		  
 		  
 		  ///**********************************************************************************
 			  
 		  
 	        plugin = this;
-	
-	       
+	        getConfig().options().copyDefaults(true);
+	  
+	       saveConfig();
 		getServer().getPluginManager().registerEvents(new CokZorMobsListener(), this);
+		getServer().getPluginManager().registerEvents(new IrkSeciciListener(), this);
+		getServer().getPluginManager().registerEvents(new IrkListener(), this);
 		
 	}
 	

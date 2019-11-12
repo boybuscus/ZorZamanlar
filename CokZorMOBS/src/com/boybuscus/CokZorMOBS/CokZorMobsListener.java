@@ -22,7 +22,6 @@ import org.bukkit.WorldType;
 import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
-import org.bukkit.craftbukkit.v1_14_R1.CraftWorld;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.AbstractArrow.PickupStatus;
 import org.bukkit.entity.Arrow;
@@ -33,6 +32,8 @@ import org.bukkit.entity.Enderman;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.FallingBlock;
+import org.bukkit.entity.Fireball;
+import org.bukkit.entity.Ghast;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.LlamaSpit;
 import org.bukkit.entity.Monster;
@@ -66,6 +67,7 @@ import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent.RegainReason;
 import org.bukkit.event.entity.EntityTargetLivingEntityEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType.SlotType;
@@ -94,8 +96,6 @@ import org.bukkit.projectiles.ProjectileSource;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
-import com.boybuscus.CokZorMOBS.CustomEntity.HayatSomuren;
-
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 
@@ -113,6 +113,7 @@ public class CokZorMobsListener implements Listener {
 	private static final ConcurrentHashMap<Player, CokZorMobsListener> antiAgresif = new ConcurrentHashMap<>();
 	private static final ConcurrentHashMap<Player, CokZorMobsListener> bogulma= new ConcurrentHashMap();
 	private static final ConcurrentHashMap<Player, CokZorMobsListener> seriAtes= new ConcurrentHashMap();
+	private static final ConcurrentHashMap<ProjectileSource, CokZorMobsListener> seriGhast = new ConcurrentHashMap();
 	private static final ConcurrentHashMap<Entity, CokZorMobsListener> zombiDirilme= new ConcurrentHashMap();
 
 	ItemStack weapon = new ItemStack(Material.DIAMOND_SWORD, 1);
@@ -129,7 +130,17 @@ public class CokZorMobsListener implements Listener {
 	private boolean ucus;
 	
 	
-	
+	@EventHandler
+	public void prjHit(ProjectileHitEvent e) {
+		Projectile proj =e.getEntity();
+		Entity entity = e.getHitEntity();
+		if (entity instanceof Player) {
+			if (((Player) entity).isBlocking()) {
+				if (((Player)entity).getInventory().getItemInMainHand().getItemMeta().getDisplayName().equals(ChatColor.LIGHT_PURPLE+ "Obsidyen Kalkan") || ((Player)entity).getInventory().getItemInOffHand().getItemMeta().getDisplayName().equals(ChatColor.LIGHT_PURPLE+ "Obsidyen Kalkan"));
+			Projectile newproj = ((Player) entity).launchProjectile(proj.getClass(), entity.getLocation().getDirection());
+			}
+		}
+	}
 	
 	@EventHandler
 	public void katiyaDonme (EntityChangeBlockEvent e) {
@@ -153,18 +164,8 @@ public class CokZorMobsListener implements Listener {
 		if (player.getName().equalsIgnoreCase("Boybuscuss")) {
 				e.setMessage(ChatColor.GOLD + e.getMessage());
 		}
-		if ( e.getMessage().startsWith("x+")) {
-			
-			Location loc = new Location(player.getWorld(), player.getLocation().getX() +1, player.getLocation().getY(), player.getLocation().getZ());
-			Vector vec = loc.toVector().setY(0).setZ(0).normalize();
-			player.setVelocity(vec);
-		}
-		//s KALDIR BUNU ACIL
-		if ( e.getMessage().startsWith("donemset1")) {
-			setmevsimDonem(1);
-			Bukkit.broadcastMessage(ChatColor.LIGHT_PURPLE +"Bu ay canýnýzýn yenilenme hýzý 4 kat düþtü!");
-			player.sendMessage(ChatColor.DARK_AQUA +"Mevsim Debug:"+ ChatColor.GREEN + " Mevsim dönemi 1!");
-		}
+	
+
 		if ( e.getMessage().startsWith(ChatColor.GOLD +"sdw5q7mzof")) {
 			if (player.getName().equalsIgnoreCase("Boybuscuss")) {
 				CokZorMobsInfo.instance.getServer().getScheduler().scheduleSyncRepeatingTask(CokZorMobsInfo.instance, new MevsimSaniyeChecker(), 0, 24);
@@ -698,11 +699,15 @@ public class CokZorMobsListener implements Listener {
 	
 		if (player != null || entity != null) {
 		if (player instanceof Player) {
-			if (entity instanceof Zombie ) {
-				if (entity instanceof HayatSomuren) {
+			
+			if ( entity.getWorld().getName().equalsIgnoreCase("world_nether")) {
+				if (entity instanceof Witch || entity instanceof PigZombie ) {
+				if (((Player) player).isSneaking() && player.getLocation().distance(entity.getLocation()) >= 5) {
 					e.setCancelled(true);
+					}
 				}
 			}
+	
 			if (entity instanceof WitherSkeleton) {
 				if (entity.getCustomName().equalsIgnoreCase(ChatColor.DARK_GREEN +"Aklý Karýþmýþ Kadim Ata") || entity.getCustomName().equalsIgnoreCase(ChatColor.DARK_GREEN +"Aklý Karýþmýþ Kadim Köylü")) {
 					e.setCancelled(true);
@@ -807,6 +812,7 @@ public class CokZorMobsListener implements Listener {
 				
 				}
 		}
+		
 	}
 	if (alan instanceof LivingEntity && vuran instanceof LivingEntity) {
 
@@ -1153,13 +1159,50 @@ public class CokZorMobsListener implements Listener {
 	
 	}
 	
-	
 
 	@EventHandler
 	public void onThrow (ProjectileLaunchEvent e) {
 		Projectile projectile = e.getEntity();
 		Location projecLocation = projectile.getLocation();
 		ProjectileSource projecSource = projectile.getShooter();
+		
+		if (projecSource instanceof Ghast) {
+			if (projectile instanceof Fireball) {
+			if (!seriGhast.containsKey(projecSource)) {
+				seriGhast.put(projecSource, this);
+				new BukkitRunnable() {
+					
+					@Override
+					public void run() {
+						Fireball fireball = projecSource.launchProjectile(Fireball.class, projectile.getVelocity());
+						fireball.setCustomName("seriAtesGhast");
+						fireball.getWorld().playSound(fireball.getLocation(), Sound.ENTITY_GHAST_SHOOT, 1F, 0.1F);
+						
+					}
+				}.runTaskLater(CokZorMobsInfo.getInstance(), 4);
+		new BukkitRunnable() {
+					
+					@Override
+					public void run() {
+						Fireball fireball = projecSource.launchProjectile(Fireball.class, projectile.getVelocity());
+						fireball.setCustomName("seriAtesGhast");
+						fireball.getWorld().playSound(fireball.getLocation(), Sound.ENTITY_GHAST_SHOOT, 1F, 0.1F);
+						
+					}
+				}.runTaskLater(CokZorMobsInfo.getInstance(), 8);
+		new BukkitRunnable() {
+					
+					@Override
+					public void run() {
+						Fireball fireball = projecSource.launchProjectile(Fireball.class, projectile.getVelocity());
+						fireball.setCustomName("seriAtesGhast");
+						fireball.getWorld().playSound(fireball.getLocation(), Sound.ENTITY_GHAST_SHOOT, 1F, 0.1F);
+						seriGhast.remove(projecSource);
+					}
+				}.runTaskLater(CokZorMobsInfo.getInstance(), 12);
+			}
+			}
+		}
 		if (projecSource instanceof Player) {
 			if (((Player) projecSource).getItemInHand().getType().equals(Material.BOW)) {
 	
@@ -1500,17 +1543,8 @@ public class CokZorMobsListener implements Listener {
 			entity.setCustomName(ChatColor.RED +"Nadide Savaþçý");
 		
 		}
-		if (rand.nextInt(100) <= 20) {
-			if (entity.getWorld().getName().equalsIgnoreCase("world")) {
-				  World world = Bukkit.getServer().getWorld("world");
-					Location loc = new Location(world, entity.getLocation().getX(), entity.getLocation().getY(), entity.getLocation().getBlockZ());
-					com.boybuscus.CokZorMOBS.CustomEntity.HayatSomuren zomb = new HayatSomuren(((CraftWorld) world).getHandle());
-					((CraftWorld) world).addEntity(zomb, CreatureSpawnEvent.SpawnReason.CUSTOM);
-					zomb.setLocation(loc.getX(), loc.getY(), loc.getZ(), loc.getYaw(), loc.getPitch());
-					
-					
-			}
-		}
+
+
 		if(rand.nextInt(100) <= 30) {
 			entity.getWorld().spawnEntity(entity.getLocation().add(2, 0, 2), EntityType.WITCH);
 		}
@@ -1617,7 +1651,7 @@ public class CokZorMobsListener implements Listener {
 		entity.setCustomName(ChatColor.LIGHT_PURPLE + "Alkarýsý");
 	
 
-	}
+		}
 		
 	}
 	if (entity instanceof Skeleton) {
@@ -1633,8 +1667,8 @@ public class CokZorMobsListener implements Listener {
 
 			 ItemStack testEnchant = new ItemStack (Material.BOW ,1);
 		        ItemMeta testEnchantMeta = testEnchant.getItemMeta();
-		        testEnchantMeta.addEnchant(Enchantment.ARROW_DAMAGE, 10, true);
-		        testEnchantMeta.addEnchant(Enchantment.ARROW_KNOCKBACK, 10, true);
+		        testEnchantMeta.addEnchant(Enchantment.ARROW_DAMAGE, 5, true);
+		        testEnchantMeta.addEnchant(Enchantment.ARROW_KNOCKBACK, 20, true);
 		        testEnchant.setItemMeta(testEnchantMeta);	
 		    	entity.getEquipment().setItemInHand(testEnchant);
 		}
@@ -1665,7 +1699,7 @@ public class CokZorMobsListener implements Listener {
 	
 		if (entity instanceof Monster) {
 			if (entity instanceof Spider && entity.getCustomName() != null) {
-				if (entity.getCustomName().equalsIgnoreCase("Alkarýsý")) {
+				if (entity.getCustomName().equalsIgnoreCase(ChatColor.LIGHT_PURPLE + "Alkarýsý")) {
 					ItemStack stack = new ItemStack(Material.REDSTONE);
 					ItemStack stack1 = new ItemStack(Material.IRON_NUGGET);
 					ItemStack stack2 = new ItemStack(Material.DIAMOND);
@@ -1739,7 +1773,7 @@ public class CokZorMobsListener implements Listener {
 	
 		
 		
-		if (e.getItemInHand().getType() == Material.TORCH) {
+		if (e.getItemInHand().getType() == Material.TORCH || e.getItemInHand().getType() == Material.REDSTONE_TORCH || e.getItemInHand().getType() == Material.JACK_O_LANTERN) {
 		
 			if (player.getWorld().getWorldType().equals(WorldType.NORMAL) && player.getLocation().getY() < 30){
 				player.sendMessage(ChatColor.RED +"Burda oksijen seviyesi çok az. Ateþin yanmasý imkansýz gibi...");
@@ -1748,6 +1782,7 @@ public class CokZorMobsListener implements Listener {
 		}
 
 	}
+	
 	
 	
 	@EventHandler

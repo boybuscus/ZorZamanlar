@@ -263,7 +263,8 @@ public class MevsimTickChecker implements Runnable {
 				Player p1 = (Player) CokZorMobsInfo.getInstance().getServer().getOnlinePlayers().toArray()[random];
 				
 				if (p1 != null) {
-					p1.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(net.md_5.bungee.api.ChatColor.GREEN + "Havanýn güzelliði, keyfini yerine getiriyor."));
+					p1.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(net.md_5.bungee.api.ChatColor.GREEN + "Havanýn güzelliði, keyfini yerine getiriyor!"));
+					p1.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 24*60, 0));
 					
 				}
 			}
