@@ -18,12 +18,12 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.FallingBlock;
 import org.bukkit.entity.Monster;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
-import io.netty.util.internal.ThreadLocalRandom;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 
@@ -179,9 +179,9 @@ public class MevsimTickChecker implements Runnable {
 					for (Player player : Bukkit.getServer().getOnlinePlayers()) {
 						if (player.getWorld().getWorldType() == WorldType.NORMAL) {
 							if (player.getLocation().getY() >= player.getWorld().getHighestBlockYAt(player.getLocation())) {
-								player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(net.md_5.bungee.api.ChatColor.AQUA + "Soðuk hava beni yavaþlatýyor, bir çatýnýn altýna girmem gerek!"));
+								player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(net.md_5.bungee.api.ChatColor.AQUA + "Hava da mis gibi yahu!"));
 
-								player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 240, 0));
+								player.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 240, 0));
 							}
 			
 						}
@@ -238,10 +238,13 @@ public class MevsimTickChecker implements Runnable {
 						
 					}
 					
-					if (player.getInventory().getArmorContents() == null) {
+
+						PlayerInventory inv = player.getInventory();
+						if (inv.getHelmet() == null && inv.getChestplate() == null && inv.getLeggings() == null && inv.getBoots() == null) {
 						if (player.getWorld().getWorldType() == WorldType.NORMAL) {
 							player.sendMessage(ChatColor.BLUE + ChatColor.BOLD.toString() + "D O N U Y O R U M !");
-							player.sendMessage(ChatColor.BLUE + "Çok soðuk, bir þeyler giymeliyim!");
+							player.sendMessage(ChatColor.BLUE + "Çok soðuk, hemen üstüme bir þeyler giymeliyim!");
+							player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 24*30, 2));
 						}
 					}
 				}

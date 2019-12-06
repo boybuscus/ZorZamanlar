@@ -43,13 +43,13 @@ import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.entity.Rabbit;
 import org.bukkit.entity.Skeleton;
+import org.bukkit.entity.Snowball;
 import org.bukkit.entity.Spider;
 import org.bukkit.entity.TNTPrimed;
 import org.bukkit.entity.Vex;
 import org.bukkit.entity.Vindicator;
 import org.bukkit.entity.Witch;
 import org.bukkit.entity.WitherSkeleton;
-import org.bukkit.entity.WitherSkull;
 import org.bukkit.entity.Wolf;
 import org.bukkit.entity.Zombie;
 import org.bukkit.event.EventHandler;
@@ -87,6 +87,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.Merchant;
 import org.bukkit.inventory.MerchantRecipe;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -1457,7 +1458,7 @@ public class CokZorMobsListener implements Listener {
 				if (((Nameable) e.getEntity().getShooter()).getCustomName() == null ) {
 			Entity wi=	(Entity) e.getEntity().getShooter();
 				e.setCancelled(true);
-				((ProjectileSource) wi).launchProjectile(WitherSkull.class).setVelocity(e.getEntity().getVelocity().multiply(0.04));;
+				((ProjectileSource) wi).launchProjectile(Snowball.class).setVelocity(e.getEntity().getVelocity().multiply(0.04));;
 				} if (((Nameable) e.getEntity().getShooter()).getCustomName().equalsIgnoreCase(ChatColor.LIGHT_PURPLE + "Çingene")) {
 					Entity wi=	(Entity) e.getEntity().getShooter();
 					e.setCancelled(true);
@@ -1516,6 +1517,10 @@ public class CokZorMobsListener implements Listener {
 		
 		//**************************************************************************************************************************************************
 		if (entity instanceof Monster) {
+			ItemStack skull = new ItemStack(Material.PLAYER_HEAD, 1, (byte) 3);
+			SkullMeta sm = (SkullMeta) skull.getItemMeta();
+			sm.setOwner("PLAYER_NAME_GOES_HERE");
+			skull.setItemMeta(sm);
 			entity.setRemoveWhenFarAway(true);
 		}
 		//****************************************************************************************************************************************************

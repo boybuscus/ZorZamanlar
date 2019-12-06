@@ -40,8 +40,9 @@ public class IrkListener implements Listener {
 				if (rand.nextInt(100) <= 35) {
 				((Player)ent).spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(net.md_5.bungee.api.ChatColor.DARK_GREEN + "Son vuruþu blokladýn!"));
 				e.setDamage(e.getDamage()*0.50);
-					hasarci.getWorld().spawnParticle(Particle.VILLAGER_HAPPY, ent.getLocation(), 4, 0.05F, 1 + Math.random(), 0.05F);
-				}
+					hasarci.getWorld().spawnParticle(Particle.VILLAGER_HAPPY, ent.getLocation(),12, 0.05F, 1 + Math.random(), 0.05F);
+			
+ 				}
 			}
 		}
 	}
