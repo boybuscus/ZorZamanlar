@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.bukkit.Bukkit;
@@ -22,6 +23,7 @@ import org.bukkit.WorldType;
 import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.craftbukkit.v1_14_R1.CraftWorld;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.AbstractArrow.PickupStatus;
 import org.bukkit.entity.Arrow;
@@ -96,6 +98,8 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.projectiles.ProjectileSource;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
+
+import com.boybuscus.CokZorMOBS.customentity.HayatSomuren;
 
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.ComponentBuilder;
@@ -1548,7 +1552,19 @@ public class CokZorMobsListener implements Listener {
 			entity.setCustomName(ChatColor.RED +"Nadide Savaþçý");
 		
 		}
-
+		if (rand.nextInt(100) <= 20) {
+			//custom ent
+			if (entity.getWorld().getName().equalsIgnoreCase("world")) {
+				  World world = Bukkit.getServer().getWorld("world");
+					Location loc = new Location(world, entity.getLocation().getX(), entity.getLocation().getY(), entity.getLocation().getBlockZ());
+					com.boybuscus.CokZorMOBS.customentity.HayatSomuren zomb = new HayatSomuren(((CraftWorld) world).getHandle());
+					zomb.getUniqueID();
+					UUID.randomUUID();
+					((CraftWorld) world).addEntity(zomb, CreatureSpawnEvent.SpawnReason.CUSTOM);
+					zomb.setLocation(loc.getX(), loc.getY(), loc.getZ(), loc.getYaw(), loc.getPitch());
+					
+				}
+			}
 
 		if(rand.nextInt(100) <= 30) {
 			entity.getWorld().spawnEntity(entity.getLocation().add(2, 0, 2), EntityType.WITCH);

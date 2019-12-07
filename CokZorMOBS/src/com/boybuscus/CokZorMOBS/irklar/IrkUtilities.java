@@ -1,16 +1,19 @@
 package com.boybuscus.CokZorMOBS.irklar;
 
-import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 
 
 public class IrkUtilities {
+	
+	
+	private static ConcurrentHashMap<String, Long> beklemeSuresi;
+	
+	
 	public static boolean isSwordInHand(Player player) {
 		String checkerName = player.getInventory().getItemInMainHand().toString();
 		if (checkerName.contains("SWORD")) {
@@ -24,28 +27,5 @@ public class IrkUtilities {
 		}
 		return false;
 	}
-	public static Map<Player, Irk> getPlayers() {
-		return IrkSeciciListener.irklar;
-	}
-	public static Irk getIrkPlayer(Player player) {
-		Player oPlayer = Bukkit.getPlayer(player.getUniqueId());
-		if (oPlayer == null) {
-			return null;
-		}
-		return getPlayers().get(oPlayer);
-	}
-	
-	
-	public static boolean isAxiusPlayer(Player player) {
-			if (getIrkPlayer(player) != Irk.AXIUS) {
-				return false;
-			}
-		return true;
-	}
-	public static boolean isDrediusPlayer(Player player) {
-			if (getIrkPlayer(player) != Irk.DREDIUS) {
-				return false;
-			}
-			return true;
-	}
+
 }

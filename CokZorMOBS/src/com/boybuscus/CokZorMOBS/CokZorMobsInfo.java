@@ -260,7 +260,7 @@ public class CokZorMobsInfo extends JavaPlugin {
 		  ///**********************************************************************************
 		  
 	
-		  
+	
 		  
 		  ///**********************************************************************************
 			  
@@ -272,6 +272,8 @@ public class CokZorMobsInfo extends JavaPlugin {
 		getServer().getPluginManager().registerEvents(new CokZorMobsListener(), this);
 		getServer().getPluginManager().registerEvents(new IrkSeciciListener(), this);
 		getServer().getPluginManager().registerEvents(new IrkListener(), this);
+		
+		
 		
 	}
 	
