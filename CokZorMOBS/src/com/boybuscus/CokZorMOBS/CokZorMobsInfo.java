@@ -15,10 +15,12 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import com.boybuscus.CokZorMOBS.irklar.IrkListener;
 import com.boybuscus.CokZorMOBS.irklar.IrkSeciciListener;
+import com.boybuscus.CokZorMOBS.irklar.weaponabilities.CooldownManager;
+import com.boybuscus.CokZorMOBS.irklar.weaponabilities.IrkWeaponListener;
+import com.boybuscus.CokZorMOBS.irklar.weaponabilities.WeaponManager;
 	
 public class CokZorMobsInfo extends JavaPlugin {
 	   static CokZorMobsInfo instance;
-
 	   public static ItemStack konsantreElmas;
 	public CokZorMobsInfo plugin;
 
@@ -259,11 +261,28 @@ public class CokZorMobsInfo extends JavaPlugin {
 		  
 		  ///**********************************************************************************
 		  
-	
+		  //Dredius
+		  new com.boybuscus.CokZorMOBS.customitems.dredius.KisKilici(getInstance());
+		  
+		  
 	
 		  
 		  ///**********************************************************************************
-			  
+		  
+		 //Axius
+		  
+		  new com.boybuscus.CokZorMOBS.customitems.axius.BuzAsasi(getInstance());
+		  
+		  //***********************************************************************************
+		  
+		  //Pharexia
+		  
+		  new com.boybuscus.CokZorMOBS.customitems.pharexia.GercekBuzBalyozu(getInstance());
+		  
+		  //*************************************************************************************
+		  //Immortuites
+		  
+		  new com.boybuscus.CokZorMOBS.customitems.immortuites.KarabuzKargisi(getInstance());
 		  
 	        plugin = this;
 	        getConfig().options().copyDefaults(true);
@@ -271,7 +290,10 @@ public class CokZorMobsInfo extends JavaPlugin {
 	       saveConfig();
 		getServer().getPluginManager().registerEvents(new CokZorMobsListener(), this);
 		getServer().getPluginManager().registerEvents(new IrkSeciciListener(), this);
+		getServer().getPluginManager().registerEvents(new IrkWeaponListener(), this);
 		getServer().getPluginManager().registerEvents(new IrkListener(), this);
+		getServer().getScheduler().scheduleSyncRepeatingTask(this, new WeaponManager(), 0, 1);
+		getServer().getScheduler().scheduleSyncRepeatingTask(this, new CooldownManager(), 0, 1);
 		
 		
 		

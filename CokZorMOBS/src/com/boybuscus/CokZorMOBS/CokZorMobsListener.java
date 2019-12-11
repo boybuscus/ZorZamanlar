@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
-import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.bukkit.Bukkit;
@@ -23,7 +22,6 @@ import org.bukkit.WorldType;
 import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
-import org.bukkit.craftbukkit.v1_14_R1.CraftWorld;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.AbstractArrow.PickupStatus;
 import org.bukkit.entity.Arrow;
@@ -89,7 +87,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.Merchant;
 import org.bukkit.inventory.MerchantRecipe;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -98,8 +95,6 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.projectiles.ProjectileSource;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
-
-import com.boybuscus.CokZorMOBS.customentity.HayatSomuren;
 
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.ComponentBuilder;
@@ -644,7 +639,7 @@ public class CokZorMobsListener implements Listener {
 	
 	@EventHandler
 	public void showServer (ServerListPingEvent e) {
-		e.setMotd(ChatColor.DARK_RED + "Dolar 5 lirayken, bu sunucunun zorluðu nedir ki?");
+		e.setMotd(ChatColor.BLUE + "Bu soðukta evsiz olmak varken, bu sunucunun zorluðu nedir ki?");
 		
 		
 	}
@@ -1462,7 +1457,7 @@ public class CokZorMobsListener implements Listener {
 				if (((Nameable) e.getEntity().getShooter()).getCustomName() == null ) {
 			Entity wi=	(Entity) e.getEntity().getShooter();
 				e.setCancelled(true);
-				((ProjectileSource) wi).launchProjectile(Snowball.class).setVelocity(e.getEntity().getVelocity().multiply(0.04));;
+				((ProjectileSource) wi).launchProjectile(Snowball.class).setVelocity(e.getEntity().getVelocity().multiply(2));;
 				} if (((Nameable) e.getEntity().getShooter()).getCustomName().equalsIgnoreCase(ChatColor.LIGHT_PURPLE + "Çingene")) {
 					Entity wi=	(Entity) e.getEntity().getShooter();
 					e.setCancelled(true);
@@ -1520,13 +1515,10 @@ public class CokZorMobsListener implements Listener {
 		//**************************************************************************************
 		
 		//**************************************************************************************************************************************************
-		if (entity instanceof Monster) {
-			ItemStack skull = new ItemStack(Material.PLAYER_HEAD, 1, (byte) 3);
-			SkullMeta sm = (SkullMeta) skull.getItemMeta();
-			sm.setOwner("PLAYER_NAME_GOES_HERE");
-			skull.setItemMeta(sm);
-			entity.setRemoveWhenFarAway(true);
-		}
+//	if (entity instanceof HayatSomuren) {
+//	entity.setCustomName(ChatColor.DARK_BLUE + "Hayat Sömüren");
+	//entity.setCustomNameVisible(true);
+//	}
 		//****************************************************************************************************************************************************
 	if (entity instanceof Rabbit){
 		((Rabbit) entity).setRabbitType(Rabbit.Type.THE_KILLER_BUNNY);
@@ -1554,16 +1546,16 @@ public class CokZorMobsListener implements Listener {
 		}
 		if (rand.nextInt(100) <= 20) {
 			//custom ent
-			if (entity.getWorld().getName().equalsIgnoreCase("world")) {
+		/*	if (entity.getWorld().getName().equalsIgnoreCase("world")) {
 				  World world = Bukkit.getServer().getWorld("world");
 					Location loc = new Location(world, entity.getLocation().getX(), entity.getLocation().getY(), entity.getLocation().getBlockZ());
 					com.boybuscus.CokZorMOBS.customentity.HayatSomuren zomb = new HayatSomuren(((CraftWorld) world).getHandle());
 					zomb.getUniqueID();
 					UUID.randomUUID();
-					((CraftWorld) world).addEntity(zomb, CreatureSpawnEvent.SpawnReason.CUSTOM);
+					((CraftWorld) world).addEntity(zomb, CreatureSpawnEvent.SpawnReason.NATURAL);
 					zomb.setLocation(loc.getX(), loc.getY(), loc.getZ(), loc.getYaw(), loc.getPitch());
 					
-				}
+				}*/
 			}
 
 		if(rand.nextInt(100) <= 30) {

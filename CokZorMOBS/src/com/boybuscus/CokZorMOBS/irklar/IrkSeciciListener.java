@@ -21,6 +21,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import com.boybuscus.CokZorMOBS.CokZorMobsInfo;
+
 import com.sun.istack.internal.NotNull;
 
 public class IrkSeciciListener implements InventoryHolder, Listener {
@@ -37,6 +38,7 @@ public class IrkSeciciListener implements InventoryHolder, Listener {
 			initializeItems();
 			openInventory(player);
 		}
+		new IrkPlayer(player.getUniqueId(), player.getName(), irk, false);
 	}
 	
 	

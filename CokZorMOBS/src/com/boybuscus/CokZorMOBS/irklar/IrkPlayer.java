@@ -1,6 +1,5 @@
 package com.boybuscus.CokZorMOBS.irklar;
 
-import java.util.ArrayList;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -13,14 +12,14 @@ public class IrkPlayer {
 	private static ConcurrentHashMap<UUID, IrkPlayer> players = new ConcurrentHashMap<>();
 	private UUID uuid;
 	private String name;
-	private ArrayList<Irk> irklar;
+	private Irk irklar;
 	private ConcurrentHashMap<String, Long> beklemeSuresi;
 	private boolean uyanmis;
 	
 	
 	
 	
-	public IrkPlayer(UUID uuid, String playerName, ArrayList<Irk> irklar, boolean uyanmis) {
+	public IrkPlayer(UUID uuid, String playerName, Irk irklar, boolean uyanmis) {
 		this.uuid = uuid;
 		this.name = playerName;
 		this.irklar = irklar;
@@ -34,13 +33,13 @@ public class IrkPlayer {
 	public static Map<UUID, IrkPlayer> getPlayers() {
 		return players;
 	}
-	public static IrkPlayer getIrkPlayer(Player player) {
-		Player oPlayer = Bukkit.getPlayer(player.getUniqueId());
-		if (oPlayer == null) {
-			return null;
+
+
+	public static IrkPlayer getIrkPlayer(String player) {
+			Player oPlayer = Bukkit.getPlayer(player);
+			return IrkPlayer.getPlayers().get(oPlayer.getUniqueId());
 		}
-		return getPlayers().get(player);
-	}
+
 	public void addBeklemeSuresi(String weapon, long cooldown) {
 		//PlayerBeklemeSuresiChangeEvent event = new PlayerCooldownChangeEvent(Bukkit.getPlayer(uuid), ability, cooldown, Result.ADDED);
 		//Bukkit.getServer().getPluginManager().callEvent(event);
@@ -48,4 +47,20 @@ public class IrkPlayer {
 			this.beklemeSuresi.put(weapon, cooldown + System.currentTimeMillis());
 	//	}
 	}
+	public boolean isOnBeklemeSuresi(String weapon) {
+		return this.beklemeSuresi.containsKey(weapon);
+	}
+	public long getBeklemeSuresi(String weapon) {
+		if (beklemeSuresi.containsKey(weapon)) {
+			return beklemeSuresi.get(weapon);
+		}
+		return -1;
+	}
+	public ConcurrentHashMap<String, Long> getBeklemeSureleri() {
+		return beklemeSuresi;
+	}
+	public void kaldirBeklemeSuresi(String weapon) {
+		beklemeSuresi.remove(weapon);
+	}
+
 }
